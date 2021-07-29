@@ -1,5 +1,5 @@
 body {
-  background: #fafafa;
+  background: #e6e5e5;
   color: #333333;
   margin-top: 5rem;
 }
@@ -8,12 +8,12 @@ h1, h2, h3, h4, h5, h6 {
   color: #444444;
 }
 
-.bg-steel {
-  background-color: #5f788a;
+.bg-purp {
+  background-color: #8159aa;
 }
 
 .site-header .navbar-nav .nav-link {
-  color: #cbd5db;
+  color: #d0d0d0;
 }
 
 .site-header .navbar-nav .nav-link:hover {
@@ -26,9 +26,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .content-section {
   background: #ffffff;
-  padding: 10px 20px;
+  padding: 10px 40px;
   border: 1px solid #dddddd;
-  border-radius: 3px;
+  border-radius: 5px;
   margin-bottom: 20px;
 }
 
