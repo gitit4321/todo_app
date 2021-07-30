@@ -78,3 +78,28 @@ a.article-title:hover {
 .account-heading {
   font-size: 2.5rem;
 }
+
+.todo-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-outline-info {
+  color: #8159aa;
+  border-color: #8159aa;
+}
+
+.btn-outline-info:hover {
+  color: #fff;
+  background-color: #8159aa;
+  border-color: #fff;
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: 0.15s, 0.15s, 0.15s, 0.15s;
+  transition-timing-function: ease-in-out, ease-in-out, ease-in-out, ease-in-out;
+  transition-delay: 0s, 0s, 0s, 0s;
+}
+
+.todo-form-title-btn-container {
+  display: flex;
+  justify-content: space-between;
+}

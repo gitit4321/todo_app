@@ -30,6 +30,7 @@
           <!-- Navbar Right Side -->
           <div class="navbar-nav">
             {% if current_user.is_authenticated %}
+              <a class="nav-item nav-link" href="{{ url_for('new_post') }}">New Post</a>
               <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
               <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
             {% else %}
@@ -53,6 +54,17 @@
             {% endfor %}
           {% endif %}
         {% endwith %}
+        <form action="/add" method="post">
+          <div class="form-group">
+            <div class="todo-form-title-btn-container">
+              <label for="title">To Do Title</label>
+              <div class="form-group" id='add-item-btn'>
+                {{ form.submit(class="btn btn-outline-info") }}
+              </div>
+            </div>
+              <input type="text" class="form-control" id="title" name="title" placeholder="Enter Todo..."><br>
+          </div>
+        </form>
         {% block content %}{% endblock %}
       </div>
       <div class="col-md-4">

@@ -2,7 +2,9 @@
 {% block content %}	
     <article class="media content-section">
         <div class="media-body">
-            <h2 class="article-title">To Do</h2>
+            <div class='todo-header mb-2'>
+                <h2 class="article-title">To Do</h2>
+            </div>
             {% for post in posts %}
             <div class="article-metadata d-flex justify-content-between">
                 <span class="mr-2 article-content">{{ post.content }}</span>

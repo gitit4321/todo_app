@@ -1,3 +1,4 @@
+from typing import Text
 from flask.app import Flask
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
@@ -49,6 +50,11 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('The email you entered is taken. Please choose a different email.')
 
 class PostForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('Content', validators=[DataRequired()]
     )
-    submit = SubmitField('Add')
+    submit = SubmitField('Add Item')
+
+class TodoForm(FlaskForm):
+    content = TextAreaField('Content', validators=[DataRequired()])
+    submit = SubmitField('Add Item')

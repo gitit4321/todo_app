@@ -26,10 +26,27 @@ completeds = [
     }
 ]
 
+# for real todo app
 @app.route("/")
-@app.route("/home")
+@app.route("/home", methods=['GET', 'POST'])
 def home():
-    return render_template("home.html", posts=posts, completeds=completeds)
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('You added a new To Do item!', 'success')
+        return redirect(url_for('home'))
+    return render_template('home.html', posts=posts, form=form)
+    
+    # return render_template("home.html", posts=posts, completeds=completeds, form=form)
+
+#for testing
+# @app.route("/")
+# @app.route("/home", methods=['GET', 'POST'])
+# def home():
+#     posts = Post().query.all()
+#     return render_template("home.html", posts=posts)
 
 
 @app.route("/about")
@@ -106,11 +123,20 @@ def account():
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
-# @app.route("/post/new", methods=['GET', 'POST'])
-# @login_required
-# def new_post():
-#     form = PostForm()
-#     if form.validate_on_submit():
-#         flash('You added a new To Do item!', 'success')
-#         return 
-#     return render_template('create_post.html', title='New Post', form=form)
+@app.route("/post/new", methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('You added a new To Do item!', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', title='New Post', form=form)
+
+@app.route("/post", methods=['POST'])
+def post(post_id):
+    title = request.form.get('title')
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html', title=post.title, post=post)
