@@ -14,8 +14,9 @@ def home():
     if current_user.is_authenticated:
         user_id = current_user.id
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-        posts = Post.query.filter_by(user_id=user_id).all()
-        return render_template('home.html', posts=posts, image_file=image_file)
+        todos = Post.query.filter_by(user_id=user_id).filter_by(complete=False).all()
+        completed = Post.query.filter_by(user_id=user_id).filter_by(complete=True).all()
+        return render_template('home.html', todos=todos, completed=completed, image_file=image_file)
     return render_template('home.html')
 
 

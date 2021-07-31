@@ -22,50 +22,52 @@
         </form>
         <article class="media content-section">
             <div class="media-body">
-                <div class='todo-header mb-2'>
-                    <h2 class="article-title">To Do</h2>
-                </div>
-                {% for post in posts %}
-                    {% if post.complete is false %}
+                <h2 class="article-title todo-completed-title">To Do</h2>
+                {% if todos == [] %}
+                    <p>You currently have no To Do items</p>
+                {% else %}
+                    {% for todo in todos %}
                         <div class="article-metadata d-flex" id="todo-container">
-                            <a href="/complete/{{ post.id }}">
+                            <a href="/complete/{{ todo.id }}">
                                 <button class="complete-btn"></button>
                             </a>
                             <div class="post-text-del-container">
                                 <div class="post-text-container">
-                                    <span class="mr-2 article-content">{{ post.title }}</span>
+                                    <span class="mr-2 article-content">{{ todo.title }}</span>
                                 </div>
                                 <div class="input-group delete-btn-container">
-                                    <a href="/delete/{{ post.id }}" class="btn-close"></a>
+                                    <a href="/delete/{{ todo.id }}" class="btn-close"></a>
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
-                {% endfor %}
+                    {% endfor %}
+                {% endif %}
             </div>
         </article>
-        {% for post in posts %}
-            {% if post.complete is true %}
-                <article class="media content-section">
-                    <div class="media-body">
-                        <h2 class="article-title">Completed</h2>
+        <article class="media content-section">
+            <div class="media-body">
+                <h2 class="article-title todo-completed-title">Completed</h2>
+                {% if completed == [] %}
+                    <p>You currently have no completed To Do items</p>
+                {% else %}
+                    {% for todo in completed %}
                         <div class="article-metadata d-flex" id="todo-container">
-                            <a href="/complete/{{ post.id }}">
+                            <a href="/complete/{{ todo.id }}">
                                 <button class="complete-btn"></button>
                             </a>
                             <div class="post-text-del-container">
                                 <div class="post-text-container">
-                                    <span class="mr-2 article-content line">{{ post.title }}</span>
+                                    <span class="mr-2 article-content line">{{ todo.title }}</span>
                                 </div>
                                 <div class="input-group delete-btn-container">
-                                    <a href="/delete/{{ post.id }}" class="btn-close"></a>
+                                    <a href="/delete/{{ todo.id }}" class="btn-close"></a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </article>
-            {% endif %}
-        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </article>
     {% else %}
         <div>
             <h3>Please Login/Register to access your very own To Do list!</h3>

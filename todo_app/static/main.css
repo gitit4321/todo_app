@@ -137,3 +137,7 @@ a.article-title:hover {
 #title {
   width: 100%;
 }
+
+.todo-completed-title {
+  border-bottom: 1px solid #b6b4b4;
+}
