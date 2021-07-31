@@ -7,18 +7,6 @@ from todo_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostF
 from todo_app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
-
-posts = [
-    {
-        'content': 'Wash the Car',
-        'date_posted': 'July 20, 2021'
-    },
-    {
-        'content': 'Do the Dishes',
-        'date_posted': 'July 20, 2021'
-    }
-]
-
 completeds = [
     {
         'content': 'Buy Beer',
@@ -26,27 +14,12 @@ completeds = [
     }
 ]
 
-# for real todo app
-@app.route("/")
-@app.route("/home", methods=['GET', 'POST'])
-def home():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('You added a new To Do item!', 'success')
-        return redirect(url_for('home'))
-    return render_template('home.html', posts=posts, form=form)
-    
-    # return render_template("home.html", posts=posts, completeds=completeds, form=form)
 
-#for testing
-# @app.route("/")
-# @app.route("/home", methods=['GET', 'POST'])
-# def home():
-#     posts = Post().query.all()
-#     return render_template("home.html", posts=posts)
+@app.route("/")
+@app.route("/home")
+def home():
+    posts = Post.query.all()
+    return render_template('home.html', posts=posts)
 
 
 @app.route("/about")
@@ -135,8 +108,29 @@ def new_post():
         return redirect(url_for('home'))
     return render_template('create_post.html', title='New Post', form=form)
 
+
 @app.route("/post", methods=['POST'])
-def post(post_id):
-    title = request.form.get('title')
-    post = Post.query.get_or_404(post_id)
-    return render_template('post.html', title=post.title, post=post)
+def post():
+    title = request.form.get("title")
+    post = Post(title=title, complete=False, user_id=current_user.id)
+    db.session.add(post)
+    db.session.commit()
+    flash('You added a new To Do item!', 'success')
+    return redirect(url_for('home'))
+
+
+@app.route("/complete/<string:post_id>")
+def complete(post_id):
+    post = Post.query.filter_by(id=post_id).first()
+    post.complete = not post.complete
+    db.session.commit()
+    flash('Great work! You completed one of the items on your To Do list!', 'success')
+    return redirect(url_for('home'))
+
+
+@app.route("/delete/<string:post_id>")
+def delete(post_id):
+    post = Post.query.filter_by(id=post_id).first()
+    db.session.delete(post)
+    db.session.commit()
+    return redirect(url_for('home'))

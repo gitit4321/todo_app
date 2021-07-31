@@ -103,3 +103,17 @@ a.article-title:hover {
   display: flex;
   justify-content: space-between;
 }
+
+.checkbox-containers {
+  padding-right: 10px;
+}
+
+.post-text-del-container {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.input-group {
+  justify-content: flex-end;
+}

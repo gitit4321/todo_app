@@ -1,14 +1,35 @@
 {% extends 'layout.html' %}
 {% block content %}	
+    {% if current_user.is_authenticated %}
+    <form action="/post" method="post">
+        <div class="form-group">
+            <div class="todo-form-title-btn-container">
+                <label for="title">To Do Title</label>
+                <div class="form-group" id='add-item-btn'>
+                    <button type="submit" class="btn btn-outline-info">Add Item</button>
+                </div>
+            </div>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Enter your To Do item here..."><br>
+        </div>
+    </form>
     <article class="media content-section">
         <div class="media-body">
             <div class='todo-header mb-2'>
                 <h2 class="article-title">To Do</h2>
             </div>
             {% for post in posts %}
-            <div class="article-metadata d-flex justify-content-between">
-                <span class="mr-2 article-content">{{ post.content }}</span>
-                <button type="button" class="btn-close" aria-label="Close"></button>
+            <div class="article-metadata d-flex" id="todo-container">
+                <div class="checkbox-containers">
+                    <input type="checkbox" aria-label="Checkbox for following text input">
+                </div>
+                <div class="post-text-del-container">
+                    <div class="post-text-container">
+                        <span class="mr-2 article-content">{{ post.title }}</span>
+                    </div>
+                    <div class="input-group delete-btn-container">
+                        <a href="/delete/{{ post.id }}" class="btn-close"></a>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -24,4 +45,10 @@
             {% endfor %}
         </div>
     </article>
+    {% else %}
+        <div>
+            <h3>Please Login/Register to access your very own To Do list!</h3>
+        </div>
+    {% endif %}
+
 {% endblock content %}

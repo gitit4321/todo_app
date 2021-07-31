@@ -49,12 +49,7 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('The email you entered is taken. Please choose a different email.')
 
+#delete this form
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()]
-    )
-    submit = SubmitField('Add Item')
-
-class TodoForm(FlaskForm):
-    content = TextAreaField('Content', validators=[DataRequired()])
     submit = SubmitField('Add Item')
