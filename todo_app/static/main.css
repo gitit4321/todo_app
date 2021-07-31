@@ -86,7 +86,8 @@ a.article-title:hover {
 
 .btn-outline-info {
   color: #8159aa;
-  border-color: #8159aa;
+  background-color: #fff;
+  border-color: #c8c8c8;
 }
 
 .btn-outline-info:hover {
@@ -99,13 +100,18 @@ a.article-title:hover {
   transition-delay: 0s, 0s, 0s, 0s;
 }
 
-.todo-form-title-btn-container {
-  display: flex;
-  justify-content: space-between;
+.add-btn {
+  margin-left: 20px;
 }
 
-.checkbox-containers {
-  padding-right: 10px;
+.add-todo-text-field {
+  width: 100%;
+}
+
+.complete-btn {
+  margin: 0 15px 5px 0;
+  height: 16px;
+  border-radius: 30px;
 }
 
 .post-text-del-container {
@@ -116,4 +122,18 @@ a.article-title:hover {
 
 .input-group {
   justify-content: flex-end;
+}
+
+.line {
+  text-decoration: line-through;
+}
+
+.todo-text-and-btn {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+#title {
+  width: 100%;
 }

@@ -7,19 +7,16 @@ from todo_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostF
 from todo_app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
-completeds = [
-    {
-        'content': 'Buy Beer',
-        'date_posted': 'July 21, 2021'
-    }
-]
-
 
 @app.route("/")
 @app.route("/home")
 def home():
-    posts = Post.query.all()
-    return render_template('home.html', posts=posts)
+    if current_user.is_authenticated:
+        user_id = current_user.id
+        image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+        posts = Post.query.filter_by(user_id=user_id).all()
+        return render_template('home.html', posts=posts, image_file=image_file)
+    return render_template('home.html')
 
 
 @app.route("/about")
@@ -110,6 +107,7 @@ def new_post():
 
 
 @app.route("/post", methods=['POST'])
+@login_required
 def post():
     title = request.form.get("title")
     post = Post(title=title, complete=False, user_id=current_user.id)
@@ -120,15 +118,20 @@ def post():
 
 
 @app.route("/complete/<string:post_id>")
+@login_required
 def complete(post_id):
     post = Post.query.filter_by(id=post_id).first()
     post.complete = not post.complete
     db.session.commit()
-    flash('Great work! You completed one of the items on your To Do list!', 'success')
+    if post.complete == True:
+        flash('Great work! You completed one of the items on your To Do list!', 'success')
+    else:
+        flash('We all get a bit ahead of ourselves sometimes...', 'light')
     return redirect(url_for('home'))
 
 
 @app.route("/delete/<string:post_id>")
+@login_required
 def delete(post_id):
     post = Post.query.filter_by(id=post_id).first()
     db.session.delete(post)

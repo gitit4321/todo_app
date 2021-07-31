@@ -1,54 +1,75 @@
 {% extends 'layout.html' %}
 {% block content %}	
+<div class="content-section">
     {% if current_user.is_authenticated %}
-    <form action="/post" method="post">
-        <div class="form-group">
-            <div class="todo-form-title-btn-container">
-                <label for="title">To Do Title</label>
-                <div class="form-group" id='add-item-btn'>
-                    <button type="submit" class="btn btn-outline-info">Add Item</button>
-                </div>
+        <div class="media">
+            <img class="rounded-circle account-img" src="{{ image_file }}">
+            <div class="media-body">
+                <h2 class="account-heading">{{ current_user.username  }}</h2>
+                <p class="text-secondary">{{ current_user.email }}</p>
             </div>
-            <input type="text" class="form-control" id="title" name="title" placeholder="Enter your To Do item here..."><br>
         </div>
-    </form>
-    <article class="media content-section">
-        <div class="media-body">
-            <div class='todo-header mb-2'>
-                <h2 class="article-title">To Do</h2>
-            </div>
-            {% for post in posts %}
-            <div class="article-metadata d-flex" id="todo-container">
-                <div class="checkbox-containers">
-                    <input type="checkbox" aria-label="Checkbox for following text input">
+        <form action="/post" method="post">
+            <div class="todo-text-and-btn">
+                <div class="add-todo-text-field">
+                    <textarea type="text" rows="1" cols="10" class="form-control" id="title" name="title" placeholder="Enter your To Do item here..."></textarea>
                 </div>
-                <div class="post-text-del-container">
-                    <div class="post-text-container">
-                        <span class="mr-2 article-content">{{ post.title }}</span>
+                <div>
+                    <button type="submit" class="btn btn-outline-info add-btn">Add</button>
+                </div>
+                <br>
+            </div>
+        </form>
+        <article class="media content-section">
+            <div class="media-body">
+                <div class='todo-header mb-2'>
+                    <h2 class="article-title">To Do</h2>
+                </div>
+                {% for post in posts %}
+                    {% if post.complete is false %}
+                        <div class="article-metadata d-flex" id="todo-container">
+                            <a href="/complete/{{ post.id }}">
+                                <button class="complete-btn"></button>
+                            </a>
+                            <div class="post-text-del-container">
+                                <div class="post-text-container">
+                                    <span class="mr-2 article-content">{{ post.title }}</span>
+                                </div>
+                                <div class="input-group delete-btn-container">
+                                    <a href="/delete/{{ post.id }}" class="btn-close"></a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </article>
+        {% for post in posts %}
+            {% if post.complete is true %}
+                <article class="media content-section">
+                    <div class="media-body">
+                        <h2 class="article-title">Completed</h2>
+                        <div class="article-metadata d-flex" id="todo-container">
+                            <a href="/complete/{{ post.id }}">
+                                <button class="complete-btn"></button>
+                            </a>
+                            <div class="post-text-del-container">
+                                <div class="post-text-container">
+                                    <span class="mr-2 article-content line">{{ post.title }}</span>
+                                </div>
+                                <div class="input-group delete-btn-container">
+                                    <a href="/delete/{{ post.id }}" class="btn-close"></a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="input-group delete-btn-container">
-                        <a href="/delete/{{ post.id }}" class="btn-close"></a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </article>
-    <article class="media content-section">
-        <div class="media-body">
-            <h2 class="article-title">Completed</h2>
-            {% for completed in completeds %}
-                <div class="article-metadata d-flex justify-content-between">
-                    <span class="mr-2 article-content">{{ completed.content }}</span>
-                    <button type="button" class="btn-close" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        </div>
-    </article>
+                </article>
+            {% endif %}
+        {% endfor %}
     {% else %}
         <div>
             <h3>Please Login/Register to access your very own To Do list!</h3>
         </div>
     {% endif %}
-
+</div>
 {% endblock content %}
