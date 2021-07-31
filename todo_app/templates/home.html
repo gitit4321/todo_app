@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends 'index.html' %}
 {% block content %}	
 <div class="content-section">
     {% if current_user.is_authenticated %}
@@ -70,7 +70,9 @@
         </article>
     {% else %}
         <div>
-            <h3>Please Login/Register to access your very own To Do list!</h3>
+            <h2 class="welcome-text">Welcome to To Do App</h2>
+            <br>
+            <p class="welcome-text">Please Login/Register to access your very own To Do list!</p>
         </div>
     {% endif %}
 </div>

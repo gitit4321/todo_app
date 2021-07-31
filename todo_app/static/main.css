@@ -141,3 +141,16 @@ a.article-title:hover {
 .todo-completed-title {
   border-bottom: 1px solid #b6b4b4;
 }
+
+.welcome-text {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+p.welcome-text {
+  margin-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
