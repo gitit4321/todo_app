@@ -2,10 +2,11 @@ import os
 import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request
-from todo_app import app, db, bcrypt
-from todo_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
+from todo_app import app, db, bcrypt, mail
+from todo_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm, ResetPasswordForm
 from todo_app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
+from flask_mail import Message
 
 
 @app.route("/")
@@ -14,15 +15,10 @@ def home():
     if current_user.is_authenticated:
         user_id = current_user.id
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-        todos = Post.query.filter_by(user_id=user_id).filter_by(complete=False).all()
-        completed = Post.query.filter_by(user_id=user_id).filter_by(complete=True).all()
+        todos = Post.query.filter_by(user_id=user_id).filter_by(complete=False).order_by(Post.date_posted.desc()).all()
+        completed = Post.query.filter_by(user_id=user_id).filter_by(complete=True).order_by(Post.date_posted.desc()).all()
         return render_template('home.html', todos=todos, completed=completed, image_file=image_file)
     return render_template('home.html')
-
-
-@app.route("/about")
-def about():
-    return render_template("about.html", title='About')
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -94,18 +90,6 @@ def account():
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
-@app.route("/post/new", methods=['GET', 'POST'])
-@login_required
-def new_post():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('You added a new To Do item!', 'success')
-        return redirect(url_for('home'))
-    return render_template('create_post.html', title='New Post', form=form)
-
 
 @app.route("/post", methods=['POST'])
 @login_required
@@ -114,7 +98,9 @@ def post():
     post = Post(title=title, complete=False, user_id=current_user.id)
     db.session.add(post)
     db.session.commit()
-    flash('You added a new To Do item!', 'success')
+
+    ## flash message... to use or not to use? ##
+    # flash('You added a new To Do item!', 'success')
     return redirect(url_for('home'))
 
 
@@ -124,10 +110,12 @@ def complete(post_id):
     post = Post.query.filter_by(id=post_id).first()
     post.complete = not post.complete
     db.session.commit()
-    if post.complete == True:
-        flash('Great work! You completed one of the items on your To Do list!', 'success')
-    else:
-        flash('We all get a bit ahead of ourselves sometimes...', 'light')
+
+    ## flash message... to use or not to use? ##
+    # if post.complete == True:
+    #     flash('Great work! You completed one of the items on your To Do list!', 'success')
+    # else:
+    #     flash('We all get a bit ahead of ourselves sometimes...', 'light')
     return redirect(url_for('home'))
 
 
@@ -138,3 +126,46 @@ def delete(post_id):
     db.session.delete(post)
     db.session.commit()
     return redirect(url_for('home'))
+
+
+def send_reset_email(user):
+    token = user.get_reset_token()
+    msg = Message('Password Reset Request',
+                    sender='noreply@demo.com', 
+                    recipients=[user.email])
+    msg.body = f'''To reset your password, visit the following link: 
+{url_for('reset_token', token=token, _external=True)}
+
+If you did not make this request then simply ignore this email and no changes will be made to your account.
+'''
+    mail.send(msg)
+
+@app.route("/reset_password", methods=['GET', 'POST'])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash(f'An email has been sent to {user.email} with instructions to reset you password.', 'info')
+        return redirect(url_for('login'))
+    return render_template('reset_request.html', title='Reset Password', form=form)
+
+
+@app.route("/reset_password/<token>", methods=['GET', 'POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('Invalid or expired token', 'warning')
+        return redirect(url_for('reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.password = hashed_password
+        db.session.commit()
+        flash('Your password has been reset.', 'success')
+        return redirect(url_for('login'))
+    return render_template('reset_token.html', title='Reset Password', form=form)

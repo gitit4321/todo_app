@@ -32,12 +32,20 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 20px;
 }
 
+.add-btn {
+  margin-left: 20px;
+}
+
+.add-todo-text-field {
+  width: 100%;
+}
+
 .article-title {
   color: #444444;
 }
 
 a.article-title:hover {
-  color: #428bca;
+  color: #8159aa;
   text-decoration: none;
 }
 
@@ -84,6 +92,18 @@ a.article-title:hover {
   justify-content: space-between;
 }
 
+.btn-info{
+  color: #fff;
+  background-color: #8159aa;
+  border-color: #8159aa;
+}
+
+.btn-info:hover{
+  color: #fff;
+  background-color: #8159aa;
+  border-color: #8159aa;
+}
+
 .btn-outline-info {
   color: #8159aa;
   background-color: #fff;
@@ -100,13 +120,7 @@ a.article-title:hover {
   transition-delay: 0s, 0s, 0s, 0s;
 }
 
-.add-btn {
-  margin-left: 20px;
-}
 
-.add-todo-text-field {
-  width: 100%;
-}
 
 .complete-btn {
   margin: 0 15px 5px 0;

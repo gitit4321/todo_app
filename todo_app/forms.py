@@ -1,5 +1,6 @@
 from typing import Text
 from flask.app import Flask
+from flask.helpers import flash
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
@@ -49,7 +50,18 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('The email you entered is taken. Please choose a different email.')
 
-#delete this form
-class PostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    submit = SubmitField('Add Item')
+
+class RequestResetForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError('There is no account associated with that email.')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField("Password", validators=[DataRequired(), Length(min=6, max=22)])
+    confirm_password = PasswordField("Confirm Password", validators=[DataRequired(), Length(min=6, max=22), EqualTo('password')])
+    submit = SubmitField('Reset Password')
