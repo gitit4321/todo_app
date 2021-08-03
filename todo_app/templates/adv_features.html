@@ -1,0 +1,42 @@
+{% block adv_features %}
+<div class="col-md-4">
+    <div class="content-section">
+        <h3>Advanced Features</h3>
+        <p class='text-muted'>Feel free to use these external resources to enhance your todo list items.</p>
+        <ul class="list-group">
+            <div>
+                <li class="list-group-item list-group-item-light">URL Shortener</li>
+                <form action="/home" method="POST" class='adv-feat-form'>
+                    <textarea name="long-url" id="long-url" cols=20" rows="4" class='adv-feat-text-area' placeholder="Enter your URL here..."></textarea>
+                    <button type="submit" class='submit-btn btn btn-outline-info'>Submit</button>
+                </form>
+                <div class='adv-feat-return-field'>
+                    {% if short_url %}
+                        <a href="{{ short_url }}"><p>{{ short_url }}</p></a>
+                    {% else %}
+                        <p class='adv-feat-response-text'>Response Field</p>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+
+
+
+
+            {#
+            <div>
+                <li class="list-group-item list-group-item-light">URL Shortener</li>
+                <form action="/home" method="POST" class='adv-feat-form'>
+                    <textarea name="long-url" id="long-url" cols=20" rows="4" class='adv-feat-text-area'>Enter your URL here...</textarea>
+                    <button type="submit" class='submit-btn btn btn-outline-info'>Submit</button>
+                </form>
+                {% if short_url %}
+                    <a href="{{ short_url }}"><p>{{ short_url }}</p></a>
+                {% endif %}
+            </div>
+            #}
+        </ul>
+    </div>
+    
+</div>
+{% endblock adv_features %}

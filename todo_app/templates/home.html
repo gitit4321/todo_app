@@ -1,79 +1,93 @@
 {% extends 'index.html' %}
 {% block content %}	
-<div class="content-section">
-    {% if current_user.is_authenticated %}
-        <div class="media">
-            <img class="rounded-circle account-img" src="{{ image_file }}">
-            <div class="media-body">
-                <h2 class="account-heading">{{ current_user.username  }}</h2>
-                <p class="text-secondary">{{ current_user.email }}</p>
+<div class="col-md-8">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class='alert alert-{{ category }}'>
+                {{ message }}
             </div>
-        </div>
-        <form action="/post" method="post">
-            <div class="todo-text-and-btn">
-                <div class="add-todo-text-field">
-                    <textarea type="text" rows="1" cols="10" class="form-control" id="title" name="title" placeholder="Enter your To Do item here..."></textarea>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="content-section">
+        {% if current_user.is_authenticated %}
+            <div class="media">
+                <img class="rounded-circle account-img" src="{{ image_file }}">
+                <div class="media-body">
+                    <h2 class="account-heading">{{ current_user.username  }}</h2>
+                    <p class="text-secondary">{{ current_user.email }}</p>
                 </div>
-                <div>
-                    <button type="submit" class="btn btn-outline-info add-btn">Add</button>
+            </div>
+            <form action="/post" method="post">
+                <div class="todo-text-and-btn">
+                    <div class="add-todo-text-field">
+                        <textarea type="text" rows="1" cols="10" class="form-control" id="title" name="title" placeholder="Enter your To Do item here..."></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-outline-info add-btn">Add</button>
+                    </div>
+                    <br>
                 </div>
+            </form>
+            <article class="media content-section">
+                <div class="media-body">
+                    <h2 class="article-title todo-completed-title">To Do</h2>
+                    {% if todos == [] %}
+                        <p>You currently have no To Do items.</p>
+                    {% else %}
+                        {% for todo in todos %}
+                            <div class="article-metadata d-flex" id="todo-container">
+                                <a href="/complete/{{ todo.id }}">
+                                    <button class="complete-btn"></button>
+                                </a>
+                                <div class="post-text-del-container">
+                                    <div class="post-text-container">
+                                        <span class="mr-2 article-content">{{ todo.title }}</span>
+                                    </div>
+                                    <div class="input-group delete-btn-container">
+                                        <a href="/delete/{{ todo.id }}" class="btn-close"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </article>
+            <article class="media content-section">
+                <div class="media-body">
+                    <h2 class="article-title todo-completed-title">Completed</h2>
+                    {% if completed == [] %}
+                        <p>You currently have no completed To Do items.</p>
+                    {% else %}
+                        {% for todo in completed %}
+                            <div class="article-metadata d-flex" id="todo-container">
+                                <a href="/complete/{{ todo.id }}">
+                                    <button class="complete-btn"></button>
+                                </a>
+                                <div class="post-text-del-container">
+                                    <div class="post-text-container">
+                                        <span class="mr-2 article-content line">{{ todo.title }}</span>
+                                    </div>
+                                    <div class="input-group delete-btn-container">
+                                        <a href="/delete/{{ todo.id }}" class="btn-close"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </article>
+        {% else %}
+            <div>
+                <h2 class="welcome-text">Welcome to To Do App</h2>
                 <br>
+                <p class="welcome-text">Please Login/Register to access your very own To Do list!</p>
             </div>
-        </form>
-        <article class="media content-section">
-            <div class="media-body">
-                <h2 class="article-title todo-completed-title">To Do</h2>
-                {% if todos == [] %}
-                    <p>You currently have no To Do items.</p>
-                {% else %}
-                    {% for todo in todos %}
-                        <div class="article-metadata d-flex" id="todo-container">
-                            <a href="/complete/{{ todo.id }}">
-                                <button class="complete-btn"></button>
-                            </a>
-                            <div class="post-text-del-container">
-                                <div class="post-text-container">
-                                    <span class="mr-2 article-content">{{ todo.title }}</span>
-                                </div>
-                                <div class="input-group delete-btn-container">
-                                    <a href="/delete/{{ todo.id }}" class="btn-close"></a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-        </article>
-        <article class="media content-section">
-            <div class="media-body">
-                <h2 class="article-title todo-completed-title">Completed</h2>
-                {% if completed == [] %}
-                    <p>You currently have no completed To Do items.</p>
-                {% else %}
-                    {% for todo in completed %}
-                        <div class="article-metadata d-flex" id="todo-container">
-                            <a href="/complete/{{ todo.id }}">
-                                <button class="complete-btn"></button>
-                            </a>
-                            <div class="post-text-del-container">
-                                <div class="post-text-container">
-                                    <span class="mr-2 article-content line">{{ todo.title }}</span>
-                                </div>
-                                <div class="input-group delete-btn-container">
-                                    <a href="/delete/{{ todo.id }}" class="btn-close"></a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-        </article>
-    {% else %}
-        <div>
-            <h2 class="welcome-text">Welcome to To Do App</h2>
-            <br>
-            <p class="welcome-text">Please Login/Register to access your very own To Do list!</p>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 </div>
+
+{% include 'adv_features.html' %}
+
 {% endblock content %}

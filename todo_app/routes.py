@@ -7,16 +7,27 @@ from todo_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, Reque
 from todo_app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
+from todo_app.microservice_requests import get_shortened_url
 
 
 @app.route("/")
-@app.route("/home")
+@app.route("/home", methods=['GET', 'POST'])
 def home():
     if current_user.is_authenticated:
+        
+        # query database for todo items
         user_id = current_user.id
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         todos = Post.query.filter_by(user_id=user_id).filter_by(complete=False).order_by(Post.date_posted.desc()).all()
         completed = Post.query.filter_by(user_id=user_id).filter_by(complete=True).order_by(Post.date_posted.desc()).all()
+
+        # url-shortener service
+        if request.form.get('long-url'):
+            url = request.form.get('long-url')
+            short_url = get_shortened_url(url)
+
+            return render_template('home.html', todos=todos, completed=completed, image_file=image_file, short_url=short_url)
+
         return render_template('home.html', todos=todos, completed=completed, image_file=image_file)
     return render_template('home.html')
 

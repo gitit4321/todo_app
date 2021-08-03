@@ -168,3 +168,42 @@ p.welcome-text {
 .form-group {
   margin-bottom: 10px;
 }
+
+.adv-feat-text-area {
+  width: 100%;
+  color: #636464;
+  border: solid 1px rgba(0, 0, 0, .25);
+}
+
+.list-group-item {
+  text-align: center;
+}
+
+.adv-feat-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.submit-btn {
+  width: 50%;
+  margin: 5px 0;
+}
+
+.adv-feat-return-field {
+  background-color: #fff;
+  color: #636464;
+  text-align: center;
+  overflow-wrap: normal;
+  vertical-align: middle;
+  border: solid 1px rgba(0, 0, 0, .25);
+  border-radius: 5px;
+  width: 100%;
+  min-height: 28px;
+  max-height: fit-content;
+}
+
+.adv-feat-response-text {
+  /* overflow: auto; */
+  color: #838383;
+}
