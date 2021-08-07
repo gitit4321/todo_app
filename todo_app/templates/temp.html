@@ -37,35 +37,19 @@
                         <p>You currently have no To Do items.</p>
                     {% else %}
                         {% for todo in todos %}
-                            {% if 'http:' in todo.title %}
-                                <div class="article-metadata d-flex" id="todo-container">
-                                    <a href="/complete/{{ todo.id }}">
-                                        <button class="complete-btn"></button>
-                                    </a>
-                                    <div class="post-text-del-container">
-                                        <div class="post-text-container">
-                                            <a href="{{ todo.title }}" target='_blank'><span class="mr-2 article-content">{{ todo.title }}</span></a>
-                                        </div>
-                                        <div class="input-group delete-btn-container">
-                                            <a href="/delete/{{ todo.id }}" class="btn-close"></a>
-                                        </div>
+                            <div class="article-metadata d-flex" id="todo-container">
+                                <a href="/complete/{{ todo.id }}">
+                                    <button class="complete-btn"></button>
+                                </a>
+                                <div class="post-text-del-container">
+                                    <div class="post-text-container">
+                                        <span class="mr-2 article-content">{{ todo.title }}</span>
+                                    </div>
+                                    <div class="input-group delete-btn-container">
+                                        <a href="/delete/{{ todo.id }}" class="btn-close"></a>
                                     </div>
                                 </div>
-                            {% else %}
-                                <div class="article-metadata d-flex" id="todo-container">
-                                    <a href="/complete/{{ todo.id }}">
-                                        <button class="complete-btn"></button>
-                                    </a>
-                                    <div class="post-text-del-container">
-                                        <div class="post-text-container">
-                                            <span class="mr-2 article-content">{{ todo.title }}</span>
-                                        </div>
-                                        <div class="input-group delete-btn-container">
-                                            <a href="/delete/{{ todo.id }}" class="btn-close"></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endif %}
+                            </div>
                         {% endfor %}
                     {% endif %}
                 </div>

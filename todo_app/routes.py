@@ -1,34 +1,56 @@
 import os
 import secrets
+import pyperclip as pc
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request
+import requests
+from validators.url import url
 from todo_app import app, db, bcrypt, mail
 from todo_app.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm, ResetPasswordForm
 from todo_app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
-from todo_app.microservice_requests import get_shortened_url
+from todo_app.microservice_requests import get_shortened_url, get_map_info
 
+def query_db_for_user_data(user_id):
+    todos = Post.query.filter_by(user_id=user_id).filter_by(complete=False).order_by(Post.date_posted.desc()).all()
+    completed = Post.query.filter_by(user_id=user_id).filter_by(complete=True).order_by(Post.date_posted.desc()).all()
+    image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+    user_data = (todos, completed, image_file)
+    return user_data
+
+def render_map_service(origin, destination, user_data):
+    map_info = get_map_info(origin, destination)
+    todos, completed, image_file = user_data
+    return render_template('home.html', todos=todos, completed=completed, image_file=image_file, map_info=map_info)
+
+def render_url_service(url, user_data):
+    short_url = get_shortened_url(url)
+    todos, completed, image_file = user_data
+    return render_template('home.html', todos=todos, completed=completed, image_file=image_file, short_url=short_url)
 
 @app.route("/")
 @app.route("/home", methods=['GET', 'POST'])
 def home():
     if current_user.is_authenticated:
-        
-        # query database for todo items
         user_id = current_user.id
-        image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-        todos = Post.query.filter_by(user_id=user_id).filter_by(complete=False).order_by(Post.date_posted.desc()).all()
-        completed = Post.query.filter_by(user_id=user_id).filter_by(complete=True).order_by(Post.date_posted.desc()).all()
+        user_data = query_db_for_user_data(user_id)
 
-        # url-shortener service
+        # check for map service query
+        if request.form.get('origin') and request.form.get('destination'):
+            origin = request.form.get('origin')
+            destination = request.form.get('destination')
+            return render_map_service(origin, destination, user_data)
+
+        # check for url-shortener service query
         if request.form.get('long-url'):
             url = request.form.get('long-url')
-            short_url = get_shortened_url(url)
+            return render_url_service(url, user_data)
 
-            return render_template('home.html', todos=todos, completed=completed, image_file=image_file, short_url=short_url)
-
+        # unpack user_data for page rendering w/o services
+        todos, completed, image_file = user_data
         return render_template('home.html', todos=todos, completed=completed, image_file=image_file)
+
     return render_template('home.html')
 
 
@@ -109,9 +131,6 @@ def post():
     post = Post(title=title, complete=False, user_id=current_user.id)
     db.session.add(post)
     db.session.commit()
-
-    ## flash message... to use or not to use? ##
-    # flash('You added a new To Do item!', 'success')
     return redirect(url_for('home'))
 
 
@@ -121,12 +140,6 @@ def complete(post_id):
     post = Post.query.filter_by(id=post_id).first()
     post.complete = not post.complete
     db.session.commit()
-
-    ## flash message... to use or not to use? ##
-    # if post.complete == True:
-    #     flash('Great work! You completed one of the items on your To Do list!', 'success')
-    # else:
-    #     flash('We all get a bit ahead of ourselves sometimes...', 'light')
     return redirect(url_for('home'))
 
 
@@ -180,3 +193,10 @@ def reset_token(token):
         flash('Your password has been reset.', 'success')
         return redirect(url_for('login'))
     return render_template('reset_token.html', title='Reset Password', form=form)
+
+@app.route("/copy_to_clipboard/<path:url>")
+@login_required
+def copy_to_clipboard(url):
+    pc.copy(url)
+    flash('Copied to clipboard.', 'success')
+    return redirect(url_for('home'))

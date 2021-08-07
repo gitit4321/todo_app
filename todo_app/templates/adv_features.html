@@ -1,8 +1,10 @@
 {% block adv_features %}
 <div class="col-md-4">
     <div class="content-section">
+        <br>
         <h3>Advanced Features</h3>
         <p class='text-muted'>Feel free to use these external resources to enhance your todo list items.</p>
+        <br>
         <ul class="list-group">
             <div>
                 <li class="list-group-item list-group-item-light">URL Shortener</li>
@@ -10,31 +12,48 @@
                     <textarea name="long-url" id="long-url" cols=20" rows="4" class='adv-feat-text-area' placeholder="Enter your URL here..."></textarea>
                     <button type="submit" class='submit-btn btn btn-outline-info'>Submit</button>
                 </form>
-                <div class='adv-feat-return-field'>
+                <div class='adv-feat-return-field-return'>
                     {% if short_url %}
-                        <a href="{{ short_url }}"><p>{{ short_url }}</p></a>
+                        {% if short_url == 'not_valid' %}
+                            <p style='color:red' class='adv-feat-response-text''>Please enter a valid URL.</p>
+                        {% else %}
+                            <form action="/copy_to_clipboard/{{ short_url }}" method="GET" class='copy-to-clipboard-form'>
+                                <div class='return-container'>
+                                    <a href="{{ short_url }}"><p>{{ short_url }}</p></a>
+                                </div>
+                                <button type="submit" class="btn btn-outline-info copy-to-clipboard-btn"><i class="fas fa-clipboard-list"></i></button>
+                            </form>
+                        {% endif %}
                     {% else %}
                         <p class='adv-feat-response-text'>Response Field</p>
                     {% endif %}
                 </div>
             </div>
             <br>
-
-
-
-
-            {#
             <div>
-                <li class="list-group-item list-group-item-light">URL Shortener</li>
+                <li class="list-group-item list-group-item-light">Get Driving Time</li>
                 <form action="/home" method="POST" class='adv-feat-form'>
-                    <textarea name="long-url" id="long-url" cols=20" rows="4" class='adv-feat-text-area'>Enter your URL here...</textarea>
+                    <input type="text" name="origin" class='adv-feat-text-area' id="origin" placeholder="Origin Zip">
+                    <input type="text" name="destination" class='adv-feat-text-area' id="destination" placeholder="Destination Zip">
                     <button type="submit" class='submit-btn btn btn-outline-info'>Submit</button>
                 </form>
-                {% if short_url %}
-                    <a href="{{ short_url }}"><p>{{ short_url }}</p></a>
-                {% endif %}
+                <div class='adv-feat-return-field-return'>
+                    {% if map_info %}
+                        {% if map_info == 'not_valid' %}
+                            <p style='color:red' class='adv-feat-response-text''>Please enter valid ZIP codes.</p>
+                        {% else %}
+                            <form action="/copy_to_clipboard/{{ map_info }}" method="GET" class='copy-to-clipboard-form'>
+                                <div class='return-container'>
+                                    <p>{{ map_info }}</p>
+                                </div>
+                                <button type="submit" class="btn btn-outline-info copy-to-clipboard-btn"><i class="fas fa-clipboard-list"></i></button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <p class='adv-feat-response-text'>Response Field</p>
+                    {% endif %}
+                </div>
             </div>
-            #}
         </ul>
     </div>
     
